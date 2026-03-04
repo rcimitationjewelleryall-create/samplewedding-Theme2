@@ -1,0 +1,85 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(42,26,16,0.96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease both;
+}
+
+.close {
+  position: absolute;
+  top: 20px; right: 20px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,248,231,0.1);
+  color: #FFF8E7;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition);
+  z-index: 10;
+}
+.close:hover { background: rgba(255,248,231,0.18); }
+
+.counter {
+  position: absolute;
+  top: 26px; left: 50%; transform: translateX(-50%);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: rgba(255,248,231,0.5);
+  z-index: 10;
+}
+
+.navBtn {
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: rgba(255,248,231,0.1);
+  color: #FFF8E7;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10;
+  transition: background var(--transition);
+}
+.navBtn:hover { background: rgba(255,248,231,0.18); }
+.prev { left: 20px; }
+.next { right: 20px; }
+
+.imgWrap {
+  max-width: calc(100vw - 140px);
+  max-height: calc(100vh - 130px);
+  display: flex; align-items: center; justify-content: center;
+  animation: scaleIn 0.25s ease both;
+}
+.img {
+  max-width: 100%;
+  max-height: calc(100vh - 130px);
+  object-fit: contain;
+  border-radius: var(--radius);
+}
+
+.bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  background: linear-gradient(to top, rgba(42,26,16,0.85), transparent);
+}
+.meta { display: flex; flex-direction: column; gap: 2px; }
+.fname { font-size: 13px; color: #FFF8E7; }
+.date  { font-size: 11px; color: rgba(255,248,231,0.5); }
+.dlBtn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 20px;
+  border-radius: 100px;
+  background: linear-gradient(135deg, #7A1E2E, #C9A06A);
+  color: #FFF8E7;
+  font-size: 13px;
+  font-weight: 600;
+  transition: opacity var(--transition), transform var(--transition);
+  text-decoration: none;
+}
+.dlBtn:hover { opacity: 0.88; transform: scale(1.03); }

@@ -1,0 +1,150 @@
+.wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 32px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── "Find My Photos" pill button ── */
+.uploadBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 26px;
+  border-radius: 100px;
+  background: linear-gradient(135deg, #7A1E2E 0%, #C9A06A 100%);
+  color: #FAF5EE;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: 0 4px 18px rgba(122,30,46,0.2);
+  user-select: none;
+}
+.uploadBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(122,30,46,0.3);
+}
+.icon { font-size: 18px; }
+
+/* Hide the real input */
+.hiddenInput { display: none; }
+
+/* ── Active filter row ── */
+.row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.activeRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: rgba(201,160,106,0.08);
+  border: 1px solid rgba(139,107,67,0.22);
+  border-radius: 100px;
+  padding: 8px 20px 8px 10px;
+}
+.thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--gold);
+}
+.activeInfo { display: flex; align-items: center; }
+
+.found {
+  color: #3A7A3A;
+  font-weight: 600;
+  font-size: 14px;
+}
+.err {
+  color: #8B1A2A;
+  font-size: 13px;
+  max-width: 260px;
+}
+
+/* ── Loading spinner ── */
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--gold-deep);
+}
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--gold-deep);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+/* Progress bar */
+.progressWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 240px;
+}
+.progressBar {
+  height: 4px;
+  background: var(--surface2);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #7A1E2E, #C9A06A);
+  border-radius: 100px;
+  transition: width 0.2s ease;
+}
+
+/* Clear button */
+.clearBtn {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 4px 10px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.clearBtn:hover {
+  color: #8B1A2A;
+  border-color: rgba(139,26,42,0.3);
+}
+
+/* Hint text */
+.hint {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.hintErr {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #8B1A2A;
+}
+.hintErr code {
+  font-size: 11px;
+  background: rgba(139,26,42,0.08);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+@media (max-width: 600px) {
+  .wrapper { padding: 16px 20px; }
+  .uploadBtn { font-size: 13px; padding: 10px 20px; }
+}
