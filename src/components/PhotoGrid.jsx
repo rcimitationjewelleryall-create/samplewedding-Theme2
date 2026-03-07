@@ -159,22 +159,25 @@ export default function PhotoGrid({ photos, onPhotoClick }) {
 
     const selected = photos.filter(p => selectedIds.has(p.id));
 
+    // For Google Drive links, we must rely on the browser's native download
+    // behavior to bypass CORS. We open them in new tabs/windows.
     for (const photo of selected) {
       try {
-        const response = await fetch(photo.url);
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url;
+        a.href = photo.url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        // HTML5 download attribute is often ignored for cross-origin, 
+        // but adding it in case the browser respects it
         a.download = photo.file_name || `photo_${photo.id}.jpg`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        // Small delay between downloads to avoid browser blocking
-        await new Promise(r => setTimeout(r, 300));
+        
+        // Delay to prevent the browser's pop-up blocker from stopping multiple tabs
+        await new Promise(r => setTimeout(r, 600));
       } catch (err) {
-        console.error(`Failed to download ${photo.file_name}:`, err);
+        console.error(`Failed to trigger download for ${photo.file_name}:`, err);
       }
     }
 

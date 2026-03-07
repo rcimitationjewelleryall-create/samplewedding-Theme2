@@ -99,7 +99,6 @@ export default function Lightbox({ photo, photos, onClose, onNav }) {
       {/* Bottom bar */}
       <div className={styles.bar} onClick={e => e.stopPropagation()}>
         <div className={styles.meta}>
-          <span className={styles.fname}>{photo.file_name}</span>
           {photo.taken_at && (
             <span className={styles.date}>
               {new Date(photo.taken_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}

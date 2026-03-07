@@ -65,6 +65,7 @@ export default function SelfieFilter({ allPhotos, onResult, onLoadingChange, isA
   const [phase,    setPhase]    = useState('idle'); // idle|loading|done|error
   const [errorMsg, setErrorMsg] = useState('');
   const [preview,  setPreview]  = useState(null);
+  const [scanProgress, setScanProgress] = useState({ current: 0, total: 0 });
   const inputRef = useRef(null);
 
   const handleFile = async (e) => {
@@ -81,23 +82,56 @@ export default function SelfieFilter({ allPhotos, onResult, onLoadingChange, isA
       // 1. Get ArcFace embedding for the selfie via local API
       const selfieEmb = await extractEmbedding(file);
 
-      // 2. Compare against pre-stored embeddings in data.json (instant — no network)
-      const matched = allPhotos
-        .filter(photo => photoMatchesSelfie(selfieEmb, photo))
-        .map(photo => photo.id);
+      // 2. Compare against pre-stored embeddings in data.json (non-blocking)
+      const matchedIds = [];
+      let processed = 0;
+      
+      const CHUNK_SIZE = 50; 
+
+      let totalPhotos = allPhotos.length;
+      
+      for (let i = 0; i < totalPhotos; i += CHUNK_SIZE) {
+        const end = Math.min(i + CHUNK_SIZE, totalPhotos);
+        
+        for (let j = i; j < end; j++) {
+          if (photoMatchesSelfie(selfieEmb, allPhotos[j])) {
+            matchedIds.push(allPhotos[j].id);
+          }
+        }
+        
+        processed = end;
+        setScanProgress({ current: processed, total: totalPhotos });
+        
+        // Yield to the browser's render pipeline so the UI can update
+        await new Promise(resolve => requestAnimationFrame(resolve));
+      }
 
       setPhase('done');
-      onResult(matched);
+      onResult(matchedIds);
       onLoadingChange?.(false);
     } catch (err) {
       setPhase('error');
-      // Give the user a helpful message if the API is not running
+      
+      let finalMsg = 'Something went wrong.';
+      
+      // Handle known JSON errors from the Python API
+      if (err.message.includes('{')) {
+        try {
+          const jsonError = JSON.parse(err.message.substring(err.message.indexOf('{')));
+          if (jsonError.detail) finalMsg = jsonError.detail;
+        } catch {
+          // If we can't parse it, fallback to default logic
+        }
+      } else {
         const isNetwork = err.message.includes('fetch') || err.message.includes('Failed to fetch');
-      setErrorMsg(
-        isNetwork
-          ? 'Cannot reach the face recognition API — check your internet connection and try again.'
-          : err.message || 'Something went wrong.'
-      );
+        if (isNetwork) {
+           finalMsg = 'Cannot reach the face recognition API — check your internet connection and try again.';
+        } else {
+           finalMsg = err.message;
+        }
+      }
+      
+      setErrorMsg(finalMsg);
       onResult(null);
       onLoadingChange?.(false);
     }
@@ -107,6 +141,7 @@ export default function SelfieFilter({ allPhotos, onResult, onLoadingChange, isA
     setPhase('idle');
     setPreview(null);
     setErrorMsg('');
+    setScanProgress({ current: 0, total: 0 });
     onResult(null);
     if (inputRef.current) inputRef.current.value = '';
   };
@@ -121,7 +156,7 @@ export default function SelfieFilter({ allPhotos, onResult, onLoadingChange, isA
           accept="image/*"
           capture="user"
           className={styles.hiddenInput}
-          onChange={handleFile}
+          onChange={(e) => handleFile(e)}
           disabled={phase === 'loading'}
         />
 
@@ -135,7 +170,12 @@ export default function SelfieFilter({ allPhotos, onResult, onLoadingChange, isA
         {/* Loading (API call) */}
         {phase === 'loading' && (
           <span className={styles.status}>
-            <span className={styles.spinner} /> Detecting your face…
+            {/* <p>hello stupid fuck</p> */}
+            <span className={styles.spinner} /> 
+            hello
+            {scanProgress.total > 0 
+              ? `Scanning ${scanProgress.current} / ${scanProgress.total} photos...`
+              : `Detecting your face...`}
           </span>
         )}
 
@@ -146,7 +186,7 @@ export default function SelfieFilter({ allPhotos, onResult, onLoadingChange, isA
             <span className={styles.found}>
               ✓ {matchCount} photo{matchCount !== 1 ? 's' : ''} found with you
             </span>
-            <button className={styles.clearBtn} onClick={handleClear}>✕ Clear</button>
+            <button className={styles.clearBtn} onClick={() => handleClear()}>✕ Clear</button>
           </div>
         )}
 
@@ -155,7 +195,7 @@ export default function SelfieFilter({ allPhotos, onResult, onLoadingChange, isA
           <div className={styles.activeRow}>
             {preview && <img src={preview} alt="Your selfie" className={styles.thumb} />}
             <span className={styles.err}>⚠ {errorMsg}</span>
-            <button className={styles.clearBtn} onClick={handleClear}>✕ Try Again</button>
+            <button className={styles.clearBtn} onClick={() => handleClear()}>✕ Try Again</button>
           </div>
         )}
       </div>
