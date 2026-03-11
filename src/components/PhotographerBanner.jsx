@@ -6,6 +6,8 @@ export default function PhotographerBanner({ photographer, gallery, onYourPhotos
   const layer2Ref = useRef(null);
   const layer3Ref = useRef(null);
   const layer4Ref = useRef(null);
+  const layer5Ref = useRef(null);
+  const scrollBtnRef = useRef(null);
   const rafRef = useRef(null);
 
   const groomName = gallery?.groom_name || 'Groom';
@@ -27,7 +29,7 @@ export default function PhotographerBanner({ photographer, gallery, onYourPhotos
       const scrollY = window.scrollY;
       // Layer 2 (3.png): 20% slower
       if (layer2Ref.current) {
-        layer2Ref.current.style.transform = `translateY(${scrollY * 0.2}px)`;
+        layer2Ref.current.style.transform = `translateY(${scrollY * 0.5}px)`;
       }
       // Layer 3 (2.png): 35% slower
       if (layer3Ref.current) {
@@ -35,7 +37,16 @@ export default function PhotographerBanner({ photographer, gallery, onYourPhotos
       }
       // Layer 4 (1.png): 50% slower
       if (layer4Ref.current) {
-        layer4Ref.current.style.transform = `translateY(${scrollY * 0.5}px)`;
+        layer4Ref.current.style.transform = `translateY(${scrollY * 0.2}px)`;
+      }
+      // Layer 5 (text): 50% slower
+      if (layer5Ref.current) {
+        layer5Ref.current.style.transform = `translateY(${scrollY * 0.5}px)`;
+      }
+      // Scroll down button: hide on scroll, show at top
+      if (scrollBtnRef.current) {
+        scrollBtnRef.current.style.opacity = scrollY === 0 ? '1' : '0';
+        scrollBtnRef.current.style.pointerEvents = scrollY === 0 ? 'auto' : 'none';
       }
     });
   }, []);
@@ -72,23 +83,32 @@ export default function PhotographerBanner({ photographer, gallery, onYourPhotos
     <header className={styles.hero} ref={heroRef}>
       {/* Layer 1: Background color — handled by CSS */}
 
-      {/* Layer 2: Lanterns (3.png) — 20% slower */}
+      {/* Layer 2: Lanterns (3.png / 2m.png on mobile) — 20% slower */}
       <div className={styles.layer2} ref={layer2Ref} aria-hidden="true">
-        <img src="/3.png" alt="" className={styles.layerImg} />
+        <picture>
+          <source media="(max-width: 768px)" srcSet="/2m.png" />
+          <img src="/3.png" alt="" className={styles.layerImg} />
+        </picture>
       </div>
 
-      {/* Layer 3: Small hearts (2.png) — 35% slower */}
+      {/* Layer 3: Small hearts (2.png / 3m.png on mobile) — 35% slower */}
       <div className={styles.layer3} ref={layer3Ref} aria-hidden="true">
-        <img src="/2.png" alt="" className={styles.layerImg} />
+        <picture>
+          <source media="(max-width: 768px)" srcSet="/3m.png" />
+          <img src="/2.png" alt="" className={styles.layerImg} />
+        </picture>
       </div>
 
-      {/* Layer 4: Large hearts (1.png) — 50% slower */}
+      {/* Layer 4: Large hearts (1.png / 4m.png on mobile) — 50% slower */}
       <div className={styles.layer4} ref={layer4Ref} aria-hidden="true">
-        <img src="/1.png" alt="" className={styles.layerImg} />
+        <picture>
+          <source media="(max-width: 768px)" srcSet="/4m.png" />
+          <img src="/1.png" alt="" className={styles.layerImg} />
+        </picture>
       </div>
 
-      {/* Layer 5: Text — normal scroll speed */}
-      <div className={styles.center}>
+      {/* Layer 5: Text — 20% slower scroll speed */}
+      <div className={styles.center} ref={layer5Ref}>
         <h1 data-reveal="0.3" className={styles.groomName}>{groomName}</h1>
         <p data-reveal="0.5" className={styles.wedsScript}>weds</p>
         <h1 data-reveal="0.7" className={styles.brideName}>{brideName}</h1>
@@ -110,6 +130,7 @@ export default function PhotographerBanner({ photographer, gallery, onYourPhotos
         className={styles.scrollDown}
         onClick={onYourPhotos}
         aria-label="Scroll to gallery"
+        ref={scrollBtnRef}
       >
         Scroll down
         <span className={styles.scrollArrow}>↓</span>

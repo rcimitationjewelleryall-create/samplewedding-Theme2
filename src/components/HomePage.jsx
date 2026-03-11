@@ -41,7 +41,7 @@ export default function HomePage() {
   };
 
   return (
-    <>
+    <div className={styles.pageWrapper}>
       <LoadingOverlay visible={loading} progress={loadingProgress} />
 
       {/* ── Hero ── */}
@@ -51,58 +51,16 @@ export default function HomePage() {
         onYourPhotos={scrollToMoments}
       />
 
-      {/* ── Find My Photos Section ── */}
-      <section className={styles.findSection}>
-        <SelfieFilter
-          allPhotos={photos}
-          onResult={handleSelfieResult}
-          onLoadingChange={setLoading}
-          onProgressChange={setLoadingProgress}
-          isActive={selfieMatchIds !== null}
-          matchCount={selfieMatchIds?.length ?? 0}
-        />
-      </section>
-
-      {/* ── Your Moments — Sub-event cards ── */}
-      <section className={styles.momentsSection} ref={momentsRef}>
-        {/* Section header */}
-        <div className={styles.sectionHeader}>
-          <div className={styles.ornamentLine} />
-          <span className={styles.sectionLabel}>Your Moments</span>
-          <div className={styles.ornamentLine} />
-        </div>
-
-        <div className={styles.cardGrid}>
-          {/* All Events card */}
-          <DataCard
-            to="/event/all"
-            image="https://lh3.googleusercontent.com/d/1G2bE7jssSgpwqh9ekELRNx0C9gKBOxRH=s800"
-            label="All Events"
-            count={gallery.total_photos ?? photos.length}
-            icon="🎊"
-            delay={0}
-          />
-
-          {/* Sub-event cards */}
-          {event_sections.map((section, i) => (
-            <DataCard
-              key={section.id}
-              to={`/event/${section.id}`}
-              image="https://lh3.googleusercontent.com/d/1G2bE7jssSgpwqh9ekELRNx0C9gKBOxRH=s800"
-              label={section.label}
-              count={section.photo_count}
-              icon={section.icon}
-              delay={(i + 1) * 0.12}
-            />
-          ))}
-        </div>
-      </section>
-
       {/* ── Thank You Section ── */}
       <section className={styles.thankYouSection}>
+        <picture>
+          <source media="(max-width: 768px)" srcSet="/Cloud.png" />
+          <img src="/CloudD.png" alt="" className={styles.thankYouBg} aria-hidden="true" />
+        </picture>
+        <div className={styles.thankYouGradient} aria-hidden="true" />
         <div className={styles.thankYouContent}>
-          <p className={styles.thankYouLabel}>We appreciate you</p>
-          <h2 className={styles.thankYouText}>Thank You for Visiting</h2>
+          {/* <p className={styles.thankYouLabel}>We appreciate you</p> */}
+          <h2 className={styles.thankYouText}>Thank You for Visiting Our Wedding</h2>
           <div className={styles.thankYouDivider}>
             <div className={styles.ornamentLine} />
             <span style={{ color: 'var(--gold)', fontSize: '16px' }}>✦</span>
@@ -116,11 +74,61 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Footer ── */}
-      <Footer photographer={photographer} gallery={gallery} />
+      {/* ── Find My Photos Section ── */}
+      <section className={styles.findSection}>
+        <SelfieFilter
+          allPhotos={photos}
+          onResult={handleSelfieResult}
+          onLoadingChange={setLoading}
+          onProgressChange={setLoadingProgress}
+          isActive={selfieMatchIds !== null}
+          matchCount={selfieMatchIds?.length ?? 0}
+        />
+      </section>
+
+      {/* ── White background wrapper for sections after 3rd ── */}
+      <div className={styles.whiteSection}>
+        {/* ── Your Moments — Sub-event cards ── */}
+        <section className={styles.momentsSection} ref={momentsRef}>
+          {/* Section header */}
+          <div className={styles.sectionHeader}>
+            <div className={styles.ornamentLine} />
+            <span className={styles.sectionLabel}>Your Moments</span>
+            <div className={styles.ornamentLine} />
+          </div>
+
+          <div className={styles.cardGrid}>
+            {/* All Events card */}
+            <DataCard
+              to="/event/all"
+              image="https://lh3.googleusercontent.com/d/1G2bE7jssSgpwqh9ekELRNx0C9gKBOxRH=s800"
+              label="All Events"
+              count={gallery.total_photos ?? photos.length}
+              icon="🎊"
+              delay={0}
+            />
+
+            {/* Sub-event cards */}
+            {event_sections.map((section, i) => (
+              <DataCard
+                key={section.id}
+                to={`/event/${section.id}`}
+                image="https://lh3.googleusercontent.com/d/1G2bE7jssSgpwqh9ekELRNx0C9gKBOxRH=s800"
+                label={section.label}
+                count={section.photo_count}
+                icon={section.icon}
+                delay={(i + 1) * 0.12}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* ── Footer ── */}
+        <Footer photographer={photographer} gallery={gallery} />
+      </div>
 
       {/* ── Hire Us FAB ── */}
       <HireUsFab photographer={photographer} />
-    </>
+    </div>
   );
 }

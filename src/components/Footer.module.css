@@ -1,6 +1,7 @@
 /* ── Footer with damask background ── */
 .footer {
   position: relative;
+  z-index: 3;
   background: #3a0118 url('/hero-bg.png') center center / cover no-repeat;
   overflow: hidden;
   padding: 100px 24px 48px;

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './DataCard.module.css';
 
@@ -13,11 +14,32 @@ import styles from './DataCard.module.css';
  *   delay    – optional animation delay in seconds
  */
 export default function DataCard({ to, image, label, count, icon, delay = 0 }) {
+  const cardRef = useRef(null);
+
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add(styles.visible);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <Link
       to={to}
       className={styles.card}
-      style={{ animationDelay: `${delay}s` }}
+      style={{ transitionDelay: `${delay}s` }}
+      ref={cardRef}
     >
       {/* Image */}
       <div className={styles.imageWrap}>

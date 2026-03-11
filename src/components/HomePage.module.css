@@ -2,19 +2,30 @@
    HomePage Styles
    ══════════════════════════════════════════════════ */
 
+/* ── Page Wrapper with gradient background ── */
+.pageWrapper {
+  background: linear-gradient(135deg, #fee4f5, #a182bc);
+  min-height: 100vh;
+}
+
 /* ── Find My Photos Section ── */
 .findSection {
   position: relative;
-  z-index: 1;
-  padding: 56px 24px 32px;
+  z-index: 3;
+  padding: 0 24px 32px;
   text-align: center;
-  /* No background — hero's #fffbf1 and page bg show through,
-     heart layers from hero float on top via higher z-index */
+  background: #ffffff;
+}
+
+/* ── White background after 3rd section ── */
+.whiteSection {
+  position: relative;
+  z-index: 3;
+  background: #ffffff;
 }
 
 /* ── Your Moments Section ── */
 .momentsSection {
-  background: var(--cream);
   padding: 32px 24px 64px;
   max-width: 1200px;
   margin: 0 auto;
@@ -167,15 +178,41 @@
 
 /* ── Thank You Section ── */
 .thankYouSection {
-  background: var(--cream);
-  padding: 80px 24px 100px;
-  text-align: center;
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  height: 60vh;
   overflow: hidden;
 }
+.thankYouBg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+.thankYouGradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to bottom, transparent, #ffffff);
+  z-index: 1;
+  pointer-events: none;
+}
 .thankYouContent {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   max-width: 600px;
   margin: 0 auto;
-  animation: fadeUp 1s ease both;
+  padding: 24px;
 }
 .thankYouLabel {
   font-size: 11px;
@@ -208,6 +245,9 @@
 }
 
 /* ── Responsive ── */
+@media (max-width: 768px) {
+  .thankYouSection { height: 45vh; }
+}
 @media (max-width: 500px) {
   .cardGrid {
     grid-template-columns: 1fr;
