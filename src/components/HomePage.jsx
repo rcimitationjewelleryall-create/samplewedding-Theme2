@@ -15,6 +15,12 @@ export default function HomePage() {
   const [selfieMatchIds, setSelfieMatchIds] = useState(null);
   const momentsRef = useRef(null);
 
+  const [perfectMoments] = useState(() => {
+    // Basic randomness: sort randomly then slice on initial render only
+    const shuffled = [...photos].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 5); // Changed to 5 for the exact bento grid layout
+  });
+
   // Site Loader State
   const [siteLoaded, setSiteLoaded] = useState(false);
   const [loadProgress, setLoadProgress] = useState(0);
@@ -54,12 +60,6 @@ export default function HomePage() {
       img.src = url;
     });
   }, [perfectMoments]);
-
-  const [perfectMoments] = useState(() => {
-    // Basic randomness: sort randomly then slice on initial render only
-    const shuffled = [...photos].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, 5); // Changed to 5 for the exact bento grid layout
-  });
 
   // Scroll to moments handler
   const scrollToMoments = () =>
