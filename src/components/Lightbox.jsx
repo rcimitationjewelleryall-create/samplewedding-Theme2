@@ -77,7 +77,7 @@ export default function Lightbox({ photo, photos, onClose, onNav }) {
       >
         {isLoading && <div className={styles.loader}></div>}
         <img
-          src={photo.thumbnail_url.replace('=s400', '=s1600')}
+          src={photo.thumbnail_url}
           alt={photo.file_name}
           className={`${styles.img} ${isLoading ? styles.imgHidden : ''}`}
           referrerPolicy="no-referrer"
@@ -104,19 +104,25 @@ export default function Lightbox({ photo, photos, onClose, onNav }) {
           )}
         </div>
         <button
-          onClick={(e) => {
+          onClick={async (e) => {
             e.stopPropagation();
             try {
-              const iframe = document.createElement('iframe');
-              iframe.style.display = 'none';
-              iframe.src = photo.url;
-              document.body.appendChild(iframe);
-              
-              setTimeout(() => {
-                document.body.removeChild(iframe);
-              }, 5000);
+              // Append cache-buster to avoid using non-CORS cached images
+              const fetchUrl = `${photo.url}?cb=${new Date().getTime()}`;
+              const response = await fetch(fetchUrl);
+              const blob = await response.blob();
+              const url = window.URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = photo.file_name || 'photo.jpg';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              window.URL.revokeObjectURL(url);
             } catch (err) {
-              console.error(`Failed to trigger download for ${photo.file_name}:`, err);
+              console.error(`Failed to download ${photo.file_name}:`, err);
+              // Fallback to opening in new tab if blob fetch fails
+              window.open(photo.url, '_blank');
             }
           }}
           className={styles.dlBtn}
